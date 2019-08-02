@@ -1,5 +1,5 @@
-pragma solidity ^0.5.8;
-pragma experimental ABIEncoderV2;
+pragma solidity ^0.5.1;
+//pragma experimental ABIEncoderV2;
 
 contract GeneDrugRepo {
     
@@ -112,28 +112,28 @@ contract GeneDrugRepo {
         if(geneName == "*" && variantNumber == "*" && drug == "*") return geneDrugRelation;
         
         if(geneName == "*" && variantNumber == "*") {
-            GeneDrugRelation[] _geneDrugRelation;
+            GeneDrugRelation[] memory _geneDrugRelation;
             for(uint i = 0; i < geneDrugRelation.length; i++) {
                 if(geneDrugRelation[i].drugName == drug) _geneDrugRelation.push(geneDrugRelation[i]);
             }
             return _geneDrugRelation;
         }
         if(geneName == "*" && drug == "*") {
-            GeneDrugRelation[] _geneDrugRelation;
+            GeneDrugRelation[] memory _geneDrugRelation;
             for(uint i = 0; i < geneDrugRelation.length; i++) {
                 if(geneDrugRelation[i].variantNumber == variantNumber) _geneDrugRelation.push(geneDrugRelation[i]);
             }
             return _geneDrugRelation;
         }
         if(variantNumber == "*" && drug == "*") {
-            GeneDrugRelation[] _geneDrugRelation;
+            GeneDrugRelation[] memory _geneDrugRelation;
             for(uint i = 0; i < geneDrugRelation.length; i++) {
                 if(geneDrugRelation[i].geneName == geneName) _geneDrugRelation.push(geneDrugRelation[i]);
             }
             return _geneDrugRelation;
         }
         if(variantNumber == "*") {
-            GeneDrugRelation[] _geneDrugRelation;
+            GeneDrugRelation[] memory _geneDrugRelation;
             for(uint i = 0; i < geneDrugRelation.length; i++) {
                 if(geneDrugRelation[i].geneName == geneName && geneDrugRelation[i].drugName == drug) _geneDrugRelation.push(geneDrugRelation[i]);
             }
