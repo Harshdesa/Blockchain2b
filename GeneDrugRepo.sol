@@ -25,8 +25,8 @@ contract GeneDrugRepo {
     }
     
     //Code here
-    GeneDrugRelation[] public geneDrugRelation;
-    GeneDrugRelation[] public _geneDrugRelation;
+    GeneDrugRelation[] geneDrugRelation;
+    
     
     mapping (address => uint) public observationCountOf;
     
@@ -97,7 +97,7 @@ contract GeneDrugRepo {
         
         observationCountOf[msg.sender] = observationCountOf[msg.sender] + 1;
     }
-
+    
     /** Takes geneName, variant-number, and drug-name as strings. A value of "*" for any name should be considered as a wildcard or alternatively as a null parameter.
         Returns: An array of GeneDrugRelation Structs which match the query parameters
 
@@ -115,6 +115,7 @@ contract GeneDrugRepo {
         string memory drug
     ) public view returns (GeneDrugRelation[] memory) {
         // Code here
+        GeneDrugRelation[] memory _geneDrugRelation;
         delete _geneDrugRelation;
         if(keccak256(abi.encodePacked(geneName)) == keccak256(abi.encodePacked("*")) && keccak256(abi.encodePacked(variantNumber)) == keccak256(abi.encodePacked("*")) && keccak256(abi.encodePacked(drug)) == keccak256(abi.encodePacked("*"))) return geneDrugRelation;
         
@@ -122,28 +123,30 @@ contract GeneDrugRepo {
             
             for(uint i = 0; i < geneDrugRelation.length; i++) {
                 if(keccak256(abi.encodePacked(geneDrugRelation[i].drugName)) == keccak256(abi.encodePacked(drug))) {
-                    _geneDrugRelation.push(geneDrugRelation[i]);
+                    //_geneDrugRelation.push(GeneDrugRelation({
+                    //    geneName: geneDrugRelation[i].geneName
+                    //    }));
                 }
             }
-            return _geneDrugRelation;
+            return geneDrugRelation;
         }
         if(keccak256(abi.encodePacked(geneName)) == keccak256(abi.encodePacked("*")) && keccak256(abi.encodePacked(drug)) == keccak256(abi.encodePacked("*"))) {
             for(uint i = 0; i < geneDrugRelation.length; i++) {
-                if(geneDrugRelation[i].variantNumber == stringToUint(variantNumber)) _geneDrugRelation.push(geneDrugRelation[i]);
+                //if(geneDrugRelation[i].variantNumber == stringToUint(variantNumber)) _geneDrugRelation.push(geneDrugRelation[i]);
             }
-            return _geneDrugRelation;
+            return geneDrugRelation;
         }
         if(keccak256(abi.encodePacked(variantNumber)) == keccak256(abi.encodePacked("*")) && keccak256(abi.encodePacked(drug)) == keccak256(abi.encodePacked("*"))) {
             for(uint i = 0; i < geneDrugRelation.length; i++) {
-                if(keccak256(abi.encodePacked(geneDrugRelation[i].geneName)) == keccak256(abi.encodePacked(geneName))) _geneDrugRelation.push(geneDrugRelation[i]);
+                //if(keccak256(abi.encodePacked(geneDrugRelation[i].geneName)) == keccak256(abi.encodePacked(geneName))) _geneDrugRelation.push(geneDrugRelation[i]);
             }
-            return _geneDrugRelation;
+            return geneDrugRelation;
         }
         if(keccak256(abi.encodePacked(variantNumber)) == keccak256(abi.encodePacked("*"))) {
             for(uint i = 0; i < geneDrugRelation.length; i++) {
-                if(keccak256(abi.encodePacked(geneDrugRelation[i].geneName)) == keccak256(abi.encodePacked(geneName)) && keccak256(abi.encodePacked(geneDrugRelation[i].drugName)) == keccak256(abi.encodePacked(drug))) _geneDrugRelation.push(geneDrugRelation[i]);
+                //if(keccak256(abi.encodePacked(geneDrugRelation[i].geneName)) == keccak256(abi.encodePacked(geneName)) && keccak256(abi.encodePacked(geneDrugRelation[i].drugName)) == keccak256(abi.encodePacked(drug))) _geneDrugRelation.push(geneDrugRelation[i]);
             }
-            return _geneDrugRelation;
+            return geneDrugRelation;
         }
     }
 
@@ -232,5 +235,6 @@ contract GeneDrugRepo {
     }
     return x;
 }
+
     
 }
