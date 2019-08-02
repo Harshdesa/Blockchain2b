@@ -1,5 +1,5 @@
 pragma solidity ^0.5.1;
-//pragma experimental ABIEncoderV2;
+pragma experimental ABIEncoderV2;
 
 contract GeneDrugRepo {
     
@@ -26,8 +26,9 @@ contract GeneDrugRepo {
     
     //Code here
     GeneDrugRelation[] public geneDrugRelation;
+    GeneDrugRelation[] public _geneDrugRelation;
     
-    mapping (address => uint) observationCountOf;
+    mapping (address => uint) public observationCountOf;
     
     /** Insert an observation into your contract, following the format defined in the data readme. 
         This function has no return value. If it completes it will be assumed the observations was recorded successfully. 
@@ -44,27 +45,32 @@ contract GeneDrugRepo {
     ) public {
         // Code here
         for(uint i = 0; i < geneDrugRelation.length; i++) {
-            if(geneDrugRelation[i].geneName == geneName && geneDrugRelation[i].variantNumber == variantNumber && geneDrugRelation[i].drugName = drugName) {
+            if(keccak256(abi.encodePacked(geneDrugRelation[i].geneName)) == keccak256(abi.encodePacked(geneName)) && keccak256(abi.encodePacked(geneDrugRelation[i].variantNumber)) == keccak256(abi.encodePacked(variantNumber)) && keccak256(abi.encodePacked(geneDrugRelation[i].drugName)) == keccak256(abi.encodePacked(drugName))) {
                 geneDrugRelation[i].totalCount++;
-                if(outcome == "IMPROVED") {
+                if(keccak256(abi.encodePacked(outcome)) == keccak256(abi.encodePacked("IMPROVED"))) {
                     geneDrugRelation[i].improvedCount++;
-                    geneDrugRelation[i].improvedPercent = (geneDrugRelation[i].improvedCount / geneDrugRelation[i].totalCount)*100;
+                    uint percent = (geneDrugRelation[i].improvedCount / geneDrugRelation[i].totalCount)*100;
+                    geneDrugRelation[i].improvedPercent = uintToString(percent);
                 }
-                if(outcome == "UNCHANGED") {
+                if(keccak256(abi.encodePacked(outcome)) == keccak256(abi.encodePacked("UNCHANGED"))) {
                     geneDrugRelation[i].unchangedCount++;
-                    geneDrugRelation[i].unchangedPercent = (geneDrugRelation[i].unchangedCount / geneDrugRelation[i].totalCount)*100;
+                    uint percent = (geneDrugRelation[i].unchangedCount / geneDrugRelation[i].totalCount)*100;
+                    geneDrugRelation[i].unchangedPercent = uintToString(percent);
                 }
-                if(outcome == "DETERIORATED") {
+                if(keccak256(abi.encodePacked(outcome)) == keccak256(abi.encodePacked("DETERIORATED"))) {
                     geneDrugRelation[i].deterioratedCount++;
-                    geneDrugRelation[i].deterioratedPercent = (geneDrugRelation[i].deterioratedCount / geneDrugRelation[i].totalCount)*100;
+                    uint percent = (geneDrugRelation[i].deterioratedCount / geneDrugRelation[i].totalCount)*100;
+                    geneDrugRelation[i].deterioratedPercent = uintToString(percent);
                 }
                 if(suspectedRelation == true) {
                     geneDrugRelation[i].suspectedRelationCount++;
-                    geneDrugRelation[i].suspectedRelationPercent = (geneDrugRelation[i].suspectedRelationCount / geneDrugRelation[i].totalCount)*100;
+                    uint percent = (geneDrugRelation[i].suspectedRelationCount / geneDrugRelation[i].totalCount)*100;
+                    geneDrugRelation[i].suspectedRelationPercent = uintToString(percent);
                 }
                 if(seriousSideEffect == true) {
                     geneDrugRelation[i].sideEffectCount++;
-                    geneDrugRelation[i].sideEffectPercent = (geneDrugRelation[i].sideEffectCount / geneDrugRelation[i].totalCount)*100;
+                    uint percent = (geneDrugRelation[i].sideEffectCount / geneDrugRelation[i].totalCount)*100;
+                    geneDrugRelation[i].sideEffectPercent = uintToString(percent);
                 }
             }
             else {
@@ -74,22 +80,22 @@ contract GeneDrugRepo {
                     drugName: drugName,
                     totalCount: 1,
                     improvedCount: 0,
-                    improvedPercent: 0,
+                    improvedPercent: "0",
                     unchangedCount: 0,
-                    unchangedPercent: 0,
+                    unchangedPercent: "0",
                     deterioratedCount: 0,
-                    deterioratedPercent: 0,
+                    deterioratedPercent: "0",
                     suspectedRelationCount: 0,
-                    suspectedRelationPercent: 0,
+                    suspectedRelationPercent: "0",
                     sideEffectCount: 1,
-                    sideEffectPercent: 1
+                    sideEffectPercent: "1"
                 }));
             }
             
             
         }
         
-        observationCountOf(msg.sender) = observationCountOf(msg.sender) + 1;
+        observationCountOf[msg.sender] = observationCountOf[msg.sender] + 1;
     }
 
     /** Takes geneName, variant-number, and drug-name as strings. A value of "*" for any name should be considered as a wildcard or alternatively as a null parameter.
@@ -109,33 +115,33 @@ contract GeneDrugRepo {
         string memory drug
     ) public view returns (GeneDrugRelation[] memory) {
         // Code here
-        if(geneName == "*" && variantNumber == "*" && drug == "*") return geneDrugRelation;
+        delete _geneDrugRelation;
+        if(keccak256(abi.encodePacked(geneName)) == keccak256(abi.encodePacked("*")) && keccak256(abi.encodePacked(variantNumber)) == keccak256(abi.encodePacked("*")) && keccak256(abi.encodePacked(drug)) == keccak256(abi.encodePacked("*"))) return geneDrugRelation;
         
-        if(geneName == "*" && variantNumber == "*") {
-            GeneDrugRelation[] memory _geneDrugRelation;
+        if(keccak256(abi.encodePacked(geneName)) == keccak256(abi.encodePacked("*")) && keccak256(abi.encodePacked(variantNumber)) == keccak256(abi.encodePacked("*"))) {
+            
             for(uint i = 0; i < geneDrugRelation.length; i++) {
-                if(geneDrugRelation[i].drugName == drug) _geneDrugRelation.push(geneDrugRelation[i]);
+                if(keccak256(abi.encodePacked(geneDrugRelation[i].drugName)) == keccak256(abi.encodePacked(drug))) {
+                    _geneDrugRelation.push(geneDrugRelation[i]);
+                }
             }
             return _geneDrugRelation;
         }
-        if(geneName == "*" && drug == "*") {
-            GeneDrugRelation[] memory _geneDrugRelation;
+        if(keccak256(abi.encodePacked(geneName)) == keccak256(abi.encodePacked("*")) && keccak256(abi.encodePacked(drug)) == keccak256(abi.encodePacked("*"))) {
             for(uint i = 0; i < geneDrugRelation.length; i++) {
-                if(geneDrugRelation[i].variantNumber == variantNumber) _geneDrugRelation.push(geneDrugRelation[i]);
+                if(geneDrugRelation[i].variantNumber == stringToUint(variantNumber)) _geneDrugRelation.push(geneDrugRelation[i]);
             }
             return _geneDrugRelation;
         }
-        if(variantNumber == "*" && drug == "*") {
-            GeneDrugRelation[] memory _geneDrugRelation;
+        if(keccak256(abi.encodePacked(variantNumber)) == keccak256(abi.encodePacked("*")) && keccak256(abi.encodePacked(drug)) == keccak256(abi.encodePacked("*"))) {
             for(uint i = 0; i < geneDrugRelation.length; i++) {
-                if(geneDrugRelation[i].geneName == geneName) _geneDrugRelation.push(geneDrugRelation[i]);
+                if(keccak256(abi.encodePacked(geneDrugRelation[i].geneName)) == keccak256(abi.encodePacked(geneName))) _geneDrugRelation.push(geneDrugRelation[i]);
             }
             return _geneDrugRelation;
         }
-        if(variantNumber == "*") {
-            GeneDrugRelation[] memory _geneDrugRelation;
+        if(keccak256(abi.encodePacked(variantNumber)) == keccak256(abi.encodePacked("*"))) {
             for(uint i = 0; i < geneDrugRelation.length; i++) {
-                if(geneDrugRelation[i].geneName == geneName && geneDrugRelation[i].drugName == drug) _geneDrugRelation.push(geneDrugRelation[i]);
+                if(keccak256(abi.encodePacked(geneDrugRelation[i].geneName)) == keccak256(abi.encodePacked(geneName)) && keccak256(abi.encodePacked(geneDrugRelation[i].drugName)) == keccak256(abi.encodePacked(drug))) _geneDrugRelation.push(geneDrugRelation[i]);
             }
             return _geneDrugRelation;
         }
@@ -150,10 +156,10 @@ contract GeneDrugRepo {
         string memory drug
     ) public view returns (bool){
         // Code here
-        if(geneName == "*" && variantNumber == "*" && drug == "*") return true;
-        if(geneName == "*" && variantNumber == "*") {
+        if(keccak256(abi.encodePacked(geneName)) == keccak256(abi.encodePacked("*")) && keccak256(abi.encodePacked(variantNumber)) == keccak256(abi.encodePacked("*")) && keccak256(abi.encodePacked(drug)) == keccak256(abi.encodePacked("*"))) return true;
+        if(keccak256(abi.encodePacked(geneName)) == keccak256(abi.encodePacked("*")) && keccak256(abi.encodePacked(variantNumber)) == keccak256(abi.encodePacked("*"))) {
             for(uint i = 0; i < geneDrugRelation.length; i++) {
-                if(geneDrugRelation[i].drug == drug) return true;
+                if(keccak256(abi.encodePacked(geneDrugRelation[i].drugName)) == keccak256(abi.encodePacked(drug))) return true;
             }
         }
         return false;
@@ -182,7 +188,49 @@ contract GeneDrugRepo {
      */
     function getNumObservationsFromSender(address sender) public view returns (uint) {
         // Code here
-        return observationCountOf(sender);
+        return observationCountOf[sender];
     }
+    
+    /** Utilities Code here
+     */
+    function uintToString(uint v) pure public returns (string memory str) {
+        uint maxlength = 100;
+        bytes memory reversed = new bytes(maxlength);
+        uint i = 0;
+        while (v != 0) {
+            uint remainder = v % 10;
+            v = v / 10;
+            reversed[i++] = byte(uint8(48 + remainder));
+        }
+        bytes memory s = new bytes(i + 1);
+        for (uint j = 0; j <= i; j++) {
+            s[j] = reversed[i - j];
+        }
+        str = string(s);
+    }
+    
+    function stringToUint(string memory s) pure public returns (uint result) {
+        bytes memory b = bytes(s);
+        uint i;
+        result = 0;
+        for (i = 0; i < b.length; i++) {
+            uint c = 5; //sliceUint(b[i], 0);
+            if (c >= 48 && c <= 57) {
+                result = result * 10 + (c - 48);
+            }
+        }
+    }
+    
+    function sliceUint(bytes memory bs, uint start)
+    internal pure
+    returns (uint)
+{
+    require(bs.length >= start + 32, "slicing out of range");
+    uint x;
+    assembly {
+        x := mload(add(bs, add(0x20, start)))
+    }
+    return x;
+}
     
 }
