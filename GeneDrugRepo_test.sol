@@ -45,6 +45,18 @@ pragma experimental ABIEncoderV2;
 
 
         }
+        
+        
+        function testQuery() public {
+            geneDrugRepoInstance.addMetaGeneDrugRelation("geneName", 5, "drugName", "UNCHANGED", true, false);
+            geneDrugRepoInstance.addMetaGeneDrugRelation("geneName2", 50, "drugName2", "IMPROVED", false, true);
+            geneDrugRepoInstance.addMetaGeneDrugRelation("geneName", 5, "drugName2", "IMPROVED", false, true);
+            
+            //GeneDrugRepo.MetaGeneDrugRelation[] memory metaGeneDrugRelationInstance = geneDrugRepoInstance.query("geneName","5","UNCHANGED");
+            //Assert.equal(geneDrugRelationInstance[0].geneName, "geneName", "Something is wrong");
+            
+        }
+        
 
         function testUintToString() public {
             Assert.equal(geneDrugRepoInstance.uintToString(5), "5", "uintToString does not work fine");
