@@ -38,23 +38,17 @@ contract GeneDrugRepo {
     
     
     //Code here
-    GeneDrugRelation[] geneDrugRelation;
+    GeneDrugRelation[] _geneDrugRelation;
     MetaGeneDrugRelation[] public metaGeneDrugRelation;
+    MetaGeneDrugRelation[] _metaGeneDrugRelation;
     
-    MetaGeneDrugRelation metaGeneDrugRelationInstance = MetaGeneDrugRelation({
-            geneName: "geneName",
-            variantNumber: 5,
-            drugName: "drugName",
-            outcome: "outcome",
-            suspectedRelation: true,
-            seriousSideEffect: false
-          });
-    
-    
+    //TESTED
     function getMetaGeneDrugRelation(uint index) public view returns (MetaGeneDrugRelation memory) {
         return metaGeneDrugRelation[index];
     }
     
+    
+    //TESTED
     function addMetaGeneDrugRelation(string memory geneName, uint variantNumber, string memory drugName, string memory outcome,  // IMPROVED, UNCHANGED, DETERIORATED. This will always be capitalized, you don't have to worry about case. 
         bool suspectedRelation, bool seriousSideEffect) public {
             metaGeneDrugRelation.push(MetaGeneDrugRelation({
@@ -150,20 +144,244 @@ contract GeneDrugRepo {
 
         Note that capitalization matters. 
     */
-    /**
+    
     function query(
         string memory geneName,
         string memory variantNumber,
         string memory drug
-    ) public view returns (GeneDrugRelation[] memory) {
+    ) public /*view*/ returns (/*GeneDrugRelation[] memory*/ MetaGeneDrugRelation[] memory) {
         // Code here
-        GeneDrugRelation[] memory _geneDrugRelation;
-        delete _geneDrugRelation;
-        if(keccak256(abi.encodePacked(geneName)) == keccak256(abi.encodePacked("*")) && keccak256(abi.encodePacked(variantNumber)) == keccak256(abi.encodePacked("*")) && keccak256(abi.encodePacked(drug)) == keccak256(abi.encodePacked("*"))) return geneDrugRelation;
+        //GeneDrugRelation[] memory _geneDrugRelation;
         
+        // create dataset 
+            for(uint i = 0; i < metaGeneDrugRelation.length; i++) {
+                if(keccak256(abi.encodePacked(metaGeneDrugRelation[i].geneName)) == keccak256(abi.encodePacked(geneName)) && metaGeneDrugRelation[i].variantNumber == stringToUint(variantNumber) && keccak256(abi.encodePacked(metaGeneDrugRelation[i].drugName)) == keccak256(abi.encodePacked(drug))) {
+                    //a a a
+                    _metaGeneDrugRelation.push(MetaGeneDrugRelation({
+                    geneName: metaGeneDrugRelation[i].geneName,
+                    variantNumber: metaGeneDrugRelation[i].variantNumber,
+                    drugName: metaGeneDrugRelation[i].drugName,
+                    outcome: metaGeneDrugRelation[i].outcome,
+                    suspectedRelation: metaGeneDrugRelation[i].suspectedRelation,
+                    seriousSideEffect: metaGeneDrugRelation[i].seriousSideEffect
+                    }));
+                }
+                if(keccak256(abi.encodePacked("*")) == keccak256(abi.encodePacked(geneName))) {
+                    if(metaGeneDrugRelation[i].variantNumber == stringToUint(variantNumber) && keccak256(abi.encodePacked(metaGeneDrugRelation[i].drugName)) == keccak256(abi.encodePacked(drug))) {
+                       //* a a
+                        _metaGeneDrugRelation.push(MetaGeneDrugRelation({
+                        geneName: metaGeneDrugRelation[i].geneName,
+                        variantNumber: metaGeneDrugRelation[i].variantNumber,
+                        drugName: metaGeneDrugRelation[i].drugName,
+                        outcome: metaGeneDrugRelation[i].outcome,
+                        suspectedRelation: metaGeneDrugRelation[i].suspectedRelation,
+                        seriousSideEffect: metaGeneDrugRelation[i].seriousSideEffect
+                        }));
+                    }
+                    if(keccak256(abi.encodePacked("*")) == keccak256(abi.encodePacked(variantNumber))) {
+                        if(keccak256(abi.encodePacked(metaGeneDrugRelation[i].drugName)) == keccak256(abi.encodePacked(drug))) {
+                            // * * a
+                            _metaGeneDrugRelation.push(MetaGeneDrugRelation({
+                            geneName: metaGeneDrugRelation[i].geneName,
+                            variantNumber: metaGeneDrugRelation[i].variantNumber,
+                            drugName: metaGeneDrugRelation[i].drugName,
+                            outcome: metaGeneDrugRelation[i].outcome,
+                            suspectedRelation: metaGeneDrugRelation[i].suspectedRelation,
+                            seriousSideEffect: metaGeneDrugRelation[i].seriousSideEffect
+                            }));
+                        }
+                    }
+                    if(keccak256(abi.encodePacked("*")) == keccak256(abi.encodePacked(drug))) {
+                        if(metaGeneDrugRelation[i].variantNumber == stringToUint(variantNumber)) {
+                            // * a *
+                            _metaGeneDrugRelation.push(MetaGeneDrugRelation({
+                            geneName: metaGeneDrugRelation[i].geneName,
+                            variantNumber: metaGeneDrugRelation[i].variantNumber,
+                            drugName: metaGeneDrugRelation[i].drugName,
+                            outcome: metaGeneDrugRelation[i].outcome,
+                            suspectedRelation: metaGeneDrugRelation[i].suspectedRelation,
+                            seriousSideEffect: metaGeneDrugRelation[i].seriousSideEffect
+                            }));
+                        }
+                    }
+                    
+                }
+                // ***  
+                if(keccak256(abi.encodePacked("*")) == keccak256(abi.encodePacked(variantNumber))) {
+                    if(keccak256(abi.encodePacked(metaGeneDrugRelation[i].geneName)) == keccak256(abi.encodePacked(geneName)) && keccak256(abi.encodePacked(metaGeneDrugRelation[i].drugName)) == keccak256(abi.encodePacked(drug))) {
+                        //a * a
+                        _metaGeneDrugRelation.push(MetaGeneDrugRelation({
+                        geneName: metaGeneDrugRelation[i].geneName,
+                        variantNumber: metaGeneDrugRelation[i].variantNumber,
+                        drugName: metaGeneDrugRelation[i].drugName,
+                        outcome: metaGeneDrugRelation[i].outcome,
+                        suspectedRelation: metaGeneDrugRelation[i].suspectedRelation,
+                        seriousSideEffect: metaGeneDrugRelation[i].seriousSideEffect
+                        }));
+                    }
+                    
+                    if(keccak256(abi.encodePacked("*")) == keccak256(abi.encodePacked(drug))) {
+                        if(keccak256(abi.encodePacked(metaGeneDrugRelation[i].geneName)) == keccak256(abi.encodePacked(geneName))) {
+                            //a * *
+                            _metaGeneDrugRelation.push(MetaGeneDrugRelation({
+                            geneName: metaGeneDrugRelation[i].geneName,
+                            variantNumber: metaGeneDrugRelation[i].variantNumber,
+                            drugName: metaGeneDrugRelation[i].drugName,
+                            outcome: metaGeneDrugRelation[i].outcome,
+                            suspectedRelation: metaGeneDrugRelation[i].suspectedRelation,
+                            seriousSideEffect: metaGeneDrugRelation[i].seriousSideEffect
+                            }));
+                        }
+                    }
+                }
+                
+                if(keccak256(abi.encodePacked("*")) == keccak256(abi.encodePacked(drug))) {
+                    if(keccak256(abi.encodePacked(metaGeneDrugRelation[i].geneName)) == keccak256(abi.encodePacked(geneName))) {
+                        if(metaGeneDrugRelation[i].variantNumber == stringToUint(variantNumber)) {
+                            //aa*
+                            _metaGeneDrugRelation.push(MetaGeneDrugRelation({
+                            geneName: metaGeneDrugRelation[i].geneName,
+                            variantNumber: metaGeneDrugRelation[i].variantNumber,
+                            drugName: metaGeneDrugRelation[i].drugName,
+                            outcome: metaGeneDrugRelation[i].outcome,
+                            suspectedRelation: metaGeneDrugRelation[i].suspectedRelation,
+                            seriousSideEffect: metaGeneDrugRelation[i].seriousSideEffect
+                            }));
+                        }
+                        
+                    }
+                    
+                    if(keccak256(abi.encodePacked("*")) == keccak256(abi.encodePacked(variantNumber))) {
+                        if(keccak256(abi.encodePacked("*")) == keccak256(abi.encodePacked(geneName))) {
+                            return metaGeneDrugRelation;
+                        }
+                    }
+                }
+            
+            }
+            
+            return _metaGeneDrugRelation;
+        // club duplicates
+        
+        /*
+        for(uint i = 0; i < metaGeneDrugRelation.length; i++) {
+            
+            if(keccak256(abi.encodePacked("*")) == keccak256(abi.encodePacked(geneName)) {
+            
+            
+            
+            
+            } else if(keccak256(abi.encodePacked(metaGeneDrugRelation[i].geneName)) == keccak256(abi.encodePacked(geneName)) {
+            
+            
+            }
+        }
+                 {
+                    
+                    for(uint j = 0; j < metaGeneDrugRelation.length; j++) {
+                        if(keccak256(abi.encodePacked("*")) == keccak256(abi.encodePacked(variantNumber)) {
+                            
+                        } else { // if genename and variant number are given
+                            for(uint k = 0; k < metaGeneDrugRelation.length; k++) {
+                                
+                            }
+                        }
+                        
+                    }
+                }
+                
+                
+            
+            
+        }
+        
+        
+        */
+        
+        
+        
+        
+        /**
+        _geneDrugRelation.push(GeneDrugRelation({
+                    geneName: "geneName",
+                    variantNumber: 5,
+                    drugName: "drugName",
+                    totalCount: 1,
+                    improvedCount: 0,
+                    improvedPercent: "0",
+                    unchangedCount: 0,
+                    unchangedPercent: "0",
+                    deterioratedCount: 0,
+                    deterioratedPercent: "0",
+                    suspectedRelationCount: 0,
+                    suspectedRelationPercent: "0",
+                    sideEffectCount: 1,
+                    sideEffectPercent: "1"
+                }));
+            */
+            /*
+            _geneDrugRelation[0].geneName = "geneName";
+            _geneDrugRelation[0].variantNumber = 5;
+            _geneDrugRelation[0].drugName = "drugName";
+            _geneDrugRelation[0].totalCount = 1;
+            _geneDrugRelation[0].improvedCount = 1;
+            _geneDrugRelation[0].improvedPercent = "1";
+            _geneDrugRelation[0].unchangedCount = 0;
+            _geneDrugRelation[0].unchangedPercent = "0";
+            _geneDrugRelation[0].deterioratedCount = 0;
+            _geneDrugRelation[0].deterioratedPercent = "0";
+            _geneDrugRelation[0].suspectedRelationCount = 0;
+            _geneDrugRelation[0].suspectedRelationPercent = "0";
+            _geneDrugRelation[0].sideEffectCount = 0;
+            _geneDrugRelation[0].sideEffectPercent = "0";
+             */ 
+                
+        
+        /**
+        _geneDrugRelation[0].geneName = geneName;
+        _geneDrugRelation[0].variantNumber = 1;
+        _geneDrugRelation[0].drugName = drug;
+            
+            for(uint i = 0; i < metaGeneDrugRelation.length; i++) {
+                if(keccak256(abi.encodePacked(metaGeneDrugRelation[i].geneName)) == keccak256(abi.encodePacked(geneName)) && metaGeneDrugRelation[i].variantNumber == stringToUint(variantNumber) && keccak256(abi.encodePacked(metaGeneDrugRelation[i].drugName)) == keccak256(abi.encodePacked(drug))) {
+
+                    _geneDrugRelation[0].totalCount++;
+                    if(keccak256(abi.encodePacked(metaGeneDrugRelation[i].outcome)) == keccak256(abi.encodePacked("IMPROVED"))) {
+                        _geneDrugRelation[0].improvedCount++;
+                    }
+                    if(keccak256(abi.encodePacked(metaGeneDrugRelation[i].outcome)) == keccak256(abi.encodePacked("UNCHANGED"))) {
+                        _geneDrugRelation[0].unchangedCount++;
+                    }
+                    if(keccak256(abi.encodePacked(metaGeneDrugRelation[i].outcome)) == keccak256(abi.encodePacked("DETERIORATED"))) {
+                        _geneDrugRelation[0].deterioratedCount++;
+                    }
+                    if(metaGeneDrugRelation[i].suspectedRelation == true) {
+                        _geneDrugRelation[0].suspectedRelationCount++;
+                    }
+                    if(metaGeneDrugRelation[i].seriousSideEffect == true) {
+                        _geneDrugRelation[0].sideEffectCount++;
+                    }
+                }
+                uint percent = (_geneDrugRelation[0].improvedCount / _geneDrugRelation[0].totalCount)*100;
+                _geneDrugRelation[0].improvedPercent = uintToString(percent);
+                percent = (_geneDrugRelation[0].unchangedCount / _geneDrugRelation[0].totalCount)*100;
+                _geneDrugRelation[0].unchangedPercent = uintToString(percent);
+                percent = (_geneDrugRelation[0].deterioratedCount / _geneDrugRelation[0].totalCount)*100;
+                _geneDrugRelation[0].deterioratedPercent = uintToString(percent);
+                percent = (_geneDrugRelation[0].suspectedRelationCount / _geneDrugRelation[0].totalCount)*100;
+                _geneDrugRelation[0].suspectedRelationPercent = uintToString(percent);
+                percent = (_geneDrugRelation[0].sideEffectCount / _geneDrugRelation[0].totalCount)*100;
+                _geneDrugRelation[0].sideEffectPercent = uintToString(percent);
+                return _geneDrugRelation;
+            
+        }
+        
+        */
+        
+        /**
         if(keccak256(abi.encodePacked(geneName)) == keccak256(abi.encodePacked("*")) && keccak256(abi.encodePacked(variantNumber)) == keccak256(abi.encodePacked("*"))) {
             
-            for(uint i = 0; i < geneDrugRelation.length; i++) {
+            for(uint i = 0; i < metaGeneDrugRelation.length; i++) {
                 if(keccak256(abi.encodePacked(geneDrugRelation[i].drugName)) == keccak256(abi.encodePacked(drug))) {
                     //_geneDrugRelation.push(GeneDrugRelation({
                     //    geneName: geneDrugRelation[i].geneName
@@ -190,11 +408,18 @@ contract GeneDrugRepo {
             }
             return geneDrugRelation;
         }
+        
+        */
+        
+        //return _geneDrugRelation;
+        
     }
-*/
+    
+    
     /** Takes: geneName,-name, variant-number, and drug-name as strings. Accepts "*" as a wild card, same rules as query
         Returns: A boolean value. True if the relation exists, false if not. If a wild card was used, then true if any relation exists which meets the non-wildcard criteria.
      */
+     //TESTED
     function entryExists(
         string memory geneName,
         string memory variantNumber,
