@@ -218,7 +218,7 @@ contract GeneDrugRepo {
                 if(keccak256(abi.encodePacked(metaGeneDrugRelation[i].geneName)) == keccak256(abi.encodePacked(geneName))) return true;
             }
         }
-        // Remaining: if 1 field is a *, if no field is a *
+        // Incomplete Remaining: if 1 field is a *, if no field is a *
         return false;
     }
     
@@ -252,21 +252,23 @@ contract GeneDrugRepo {
     }
     */
     /** Utilities Code here
-     */
-    function uintToString(uint v) pure public returns (string memory str) {
-        uint maxlength = 100;
-        bytes memory reversed = new bytes(maxlength);
-        uint i = 0;
-        while (v != 0) {
-            uint remainder = v % 10;
-            v = v / 10;
-            reversed[i++] = byte(uint8(48 + remainder));
+    */
+     //TESTED
+    function uintToString(uint _i) pure public returns (string memory _uintAsString) {
+        if (_i == 0) { return "0"; }
+        uint j = _i;
+        uint len;
+        while (j != 0) {
+            len++;
+            j /= 10;
         }
-        bytes memory s = new bytes(i + 1);
-        for (uint j = 0; j <= i; j++) {
-            s[j] = reversed[i - j];
+        bytes memory bstr = new bytes(len);
+        uint k = len - 1;
+        while (_i != 0) {
+            bstr[k--] = byte(uint8(48 + _i % 10));
+            _i /= 10;
         }
-        str = string(s);
+        return string(bstr);
     }
     
     //TESTED
@@ -281,18 +283,4 @@ contract GeneDrugRepo {
             }
         }
     }
-    
-    function sliceUint(bytes memory bs, uint start)
-    internal pure
-    returns (uint)
-{
-    require(bs.length >= start + 32, "slicing out of range");
-    uint x;
-    assembly {
-        x := mload(add(bs, add(0x20, start)))
-    }
-    return x;
-}
-
-    
 }
