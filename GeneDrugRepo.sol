@@ -24,8 +24,48 @@ contract GeneDrugRepo {
         string sideEffectPercent;
     }
     
+    struct MetaGeneDrugRelation {
+        string geneName;
+        uint variantNumber;
+        string drugName;
+        string outcome;
+        bool suspectedRelation;
+        bool seriousSideEffect;
+    }
+    
+    
+    
+    
+    
     //Code here
     GeneDrugRelation[] geneDrugRelation;
+    MetaGeneDrugRelation[] public metaGeneDrugRelation;
+    
+    MetaGeneDrugRelation metaGeneDrugRelationInstance = MetaGeneDrugRelation({
+            geneName: "geneName",
+            variantNumber: 5,
+            drugName: "drugName",
+            outcome: "outcome",
+            suspectedRelation: true,
+            seriousSideEffect: false
+          });
+    
+    
+    function getMetaGeneDrugRelation(uint index) public view returns (MetaGeneDrugRelation memory) {
+        return metaGeneDrugRelation[index];
+    }
+    
+    function addMetaGeneDrugRelation(string memory geneName, uint variantNumber, string memory drugName, string memory outcome,  // IMPROVED, UNCHANGED, DETERIORATED. This will always be capitalized, you don't have to worry about case. 
+        bool suspectedRelation, bool seriousSideEffect) public {
+            metaGeneDrugRelation.push(MetaGeneDrugRelation({
+                    geneName: geneName,
+                    variantNumber: variantNumber,
+                    drugName: drugName,
+                    outcome: outcome,
+                    suspectedRelation: suspectedRelation,
+                    seriousSideEffect: seriousSideEffect
+                }));
+        }
     
     
     mapping (address => uint) public observationCountOf;
@@ -35,6 +75,7 @@ contract GeneDrugRepo {
 
         Note: case matters for geneName and drugName. GyNx3 and gynx3 are treated as different genes.
      */
+     /**
     function insertObservation (
         string memory geneName,
         uint variantNumber,
@@ -97,7 +138,7 @@ contract GeneDrugRepo {
         
         observationCountOf[msg.sender] = observationCountOf[msg.sender] + 1;
     }
-    
+    */
     /** Takes geneName, variant-number, and drug-name as strings. A value of "*" for any name should be considered as a wildcard or alternatively as a null parameter.
         Returns: An array of GeneDrugRelation Structs which match the query parameters
 
@@ -109,6 +150,7 @@ contract GeneDrugRepo {
 
         Note that capitalization matters. 
     */
+    /**
     function query(
         string memory geneName,
         string memory variantNumber,
@@ -149,7 +191,7 @@ contract GeneDrugRepo {
             return geneDrugRelation;
         }
     }
-
+*/
     /** Takes: geneName,-name, variant-number, and drug-name as strings. Accepts "*" as a wild card, same rules as query
         Returns: A boolean value. True if the relation exists, false if not. If a wild card was used, then true if any relation exists which meets the non-wildcard criteria.
      */
@@ -161,22 +203,36 @@ contract GeneDrugRepo {
         // Code here
         if(keccak256(abi.encodePacked(geneName)) == keccak256(abi.encodePacked("*")) && keccak256(abi.encodePacked(variantNumber)) == keccak256(abi.encodePacked("*")) && keccak256(abi.encodePacked(drug)) == keccak256(abi.encodePacked("*"))) return true;
         if(keccak256(abi.encodePacked(geneName)) == keccak256(abi.encodePacked("*")) && keccak256(abi.encodePacked(variantNumber)) == keccak256(abi.encodePacked("*"))) {
-            for(uint i = 0; i < geneDrugRelation.length; i++) {
-                if(keccak256(abi.encodePacked(geneDrugRelation[i].drugName)) == keccak256(abi.encodePacked(drug))) return true;
+            for(uint i = 0; i < metaGeneDrugRelation.length; i++) {
+                if(keccak256(abi.encodePacked(metaGeneDrugRelation[i].drugName)) == keccak256(abi.encodePacked(drug))) return true;
             }
         }
+        if(keccak256(abi.encodePacked(geneName)) == keccak256(abi.encodePacked("*")) && keccak256(abi.encodePacked(drug)) == keccak256(abi.encodePacked("*"))) {
+            uint _variantNumber = stringToUint(variantNumber);
+            for(uint i = 0; i < metaGeneDrugRelation.length; i++) {
+                if(metaGeneDrugRelation[i].variantNumber == _variantNumber) return true;
+            }
+        }
+        if(keccak256(abi.encodePacked(variantNumber)) == keccak256(abi.encodePacked("*")) && keccak256(abi.encodePacked(drug)) == keccak256(abi.encodePacked("*"))) {
+            for(uint i = 0; i < metaGeneDrugRelation.length; i++) {
+                if(keccak256(abi.encodePacked(metaGeneDrugRelation[i].geneName)) == keccak256(abi.encodePacked(geneName))) return true;
+            }
+        }
+        // Remaining: if 1 field is a *, if no field is a *
         return false;
     }
     
     /** Return the total number of known relations, a.k.a. the number of unique geneName,-name, variant-number, drug-name pairs
      */
+     /**
     function getNumRelations () public view returns(uint){
         // Code here
         return geneDrugRelation.length;
     }
-    
+    */
     /** Return the total number of recorded observations, regardless of sender.
      */
+     /**
     function getNumObservations() public view returns (uint) {
         // Code here
         uint numObservations = 0;
@@ -185,15 +241,16 @@ contract GeneDrugRepo {
         }
         return numObservations;
     }
-
+*/
     /** Takes: A wallet address.
         Returns: The number of observations recorded from the provided wallet address
      */
+     /**
     function getNumObservationsFromSender(address sender) public view returns (uint) {
         // Code here
         return observationCountOf[sender];
     }
-    
+    */
     /** Utilities Code here
      */
     function uintToString(uint v) pure public returns (string memory str) {
@@ -212,12 +269,13 @@ contract GeneDrugRepo {
         str = string(s);
     }
     
+    //TESTED
     function stringToUint(string memory s) pure public returns (uint result) {
         bytes memory b = bytes(s);
         uint i;
         result = 0;
         for (i = 0; i < b.length; i++) {
-            uint c = 5; //sliceUint(b[i], 0);
+            uint c = uint(uint8(b[i]));
             if (c >= 48 && c <= 57) {
                 result = result * 10 + (c - 48);
             }
