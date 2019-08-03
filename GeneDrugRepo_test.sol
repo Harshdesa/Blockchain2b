@@ -47,8 +47,8 @@ pragma experimental ABIEncoderV2;
         }
 
         function testUintToString() public {
-            Assert.equal(geneDrugRepoInstance.uintToString(5), "str 5", "uintToString does not work fine");
-            Assert.equal(geneDrugRepoInstance.uintToString(5), "4", "uintToString works fine");
+            Assert.equal(geneDrugRepoInstance.uintToString(5), "5", "uintToString does not work fine");
+            Assert.notEqual(geneDrugRepoInstance.uintToString(5), "4", "uintToString does not work fine");
         }
         
         function testStringToUint() public {
