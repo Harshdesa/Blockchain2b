@@ -1,3 +1,15 @@
 1. The GeneDrugRelation struct cannot be made public because, it gives a stack too deep error. This error is because, the compiler tries to make a function that will return the scaler variables in the struct, and here you run into stack limitation.
 
 Solution: Declare the array as a local variable by removing public and create getter functions to retrieve the struct data.
+
+
+
+2. query function returns an array of structs
+it also has the keyword "view" as a modifier to the function. This means that the function cannot change the state of the contract.
+Therefore, a dynamic array of struct needs to be declared inside the function inside the temporary memory. 
+
+One cannot push to the array since its in the memory. 
+
+If one tries to assign values to each and every variable inside the 1st element of the array of struct, it causes a runtime error and evm reverts the transaction. 
+
+Thus, not using view.
