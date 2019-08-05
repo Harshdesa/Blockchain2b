@@ -24,6 +24,7 @@ contract GeneDrugRepo {
         //string sideEffectPercent; -> Removed due to out of gas exception
     }
     
+    //HD custom struct to add data
     struct MetaGeneDrugRelation {
         string geneName;
         uint variantNumber;
@@ -51,7 +52,7 @@ contract GeneDrugRepo {
     }
     
     
-    //TESTED
+    //TESTED  HD This function can be replaced with insertObservation below
     function addMetaGeneDrugRelation(string memory geneName, uint variantNumber, string memory drugName, string memory outcome,  // IMPROVED, UNCHANGED, DETERIORATED. This will always be capitalized, you don't have to worry about case. 
         bool suspectedRelation, bool seriousSideEffect) public {
             metaGeneDrugRelation.push(MetaGeneDrugRelation({
@@ -96,6 +97,8 @@ contract GeneDrugRepo {
         Note that capitalization matters. 
     */
     
+
+    // HD Highly inefficient query code, need to optimize this function
     function query(
         string memory geneName,
         string memory variantNumber,
@@ -302,6 +305,7 @@ contract GeneDrugRepo {
         Returns: A boolean value. True if the relation exists, false if not. If a wild card was used, then true if any relation exists which meets the non-wildcard criteria.
      */
      //TESTED
+     // HD Will check if entry exists
     function entryExists(
         string memory geneName,
         string memory variantNumber,
@@ -358,7 +362,7 @@ contract GeneDrugRepo {
         return observationCountOf[sender];
     }
     */
-    /** Utilities Code here
+    /** HD Utilities Code here 1. uint to String (for variantNumber) 2. String to uint (for variantNumber)
     */
      //TESTED
     function uintToString(uint _i) pure public returns (string memory _uintAsString) {
