@@ -13,15 +13,15 @@ contract GeneDrugRepo {
         string drugName;
         uint totalCount;
         uint improvedCount;
-        //string improvedPercent;
+        //string improvedPercent; -> Removed due to out of gas exception
         uint unchangedCount;
-        //string unchangedPercent;
+        //string unchangedPercent; -> Removed due to out of gas exception
         uint deterioratedCount;
-        //string deterioratedPercent;
+        //string deterioratedPercent; -> Removed due to out of gas exception
         uint suspectedRelationCount;
-        //string suspectedRelationPercent;
+        //string suspectedRelationPercent; -> Removed due to out of gas exception
         uint sideEffectCount;
-        //string sideEffectPercent;
+        //string sideEffectPercent; -> Removed due to out of gas exception
     }
     
     struct MetaGeneDrugRelation {
@@ -82,58 +82,6 @@ contract GeneDrugRepo {
         bool seriousSideEffect
     ) public {
         // Code here
-        for(uint i = 0; i < geneDrugRelation.length; i++) {
-            if(keccak256(abi.encodePacked(geneDrugRelation[i].geneName)) == keccak256(abi.encodePacked(geneName)) && keccak256(abi.encodePacked(geneDrugRelation[i].variantNumber)) == keccak256(abi.encodePacked(variantNumber)) && keccak256(abi.encodePacked(geneDrugRelation[i].drugName)) == keccak256(abi.encodePacked(drugName))) {
-                geneDrugRelation[i].totalCount++;
-                if(keccak256(abi.encodePacked(outcome)) == keccak256(abi.encodePacked("IMPROVED"))) {
-                    geneDrugRelation[i].improvedCount++;
-                    uint percent = (geneDrugRelation[i].improvedCount / geneDrugRelation[i].totalCount)*100;
-                    geneDrugRelation[i].improvedPercent = uintToString(percent);
-                }
-                if(keccak256(abi.encodePacked(outcome)) == keccak256(abi.encodePacked("UNCHANGED"))) {
-                    geneDrugRelation[i].unchangedCount++;
-                    uint percent = (geneDrugRelation[i].unchangedCount / geneDrugRelation[i].totalCount)*100;
-                    geneDrugRelation[i].unchangedPercent = uintToString(percent);
-                }
-                if(keccak256(abi.encodePacked(outcome)) == keccak256(abi.encodePacked("DETERIORATED"))) {
-                    geneDrugRelation[i].deterioratedCount++;
-                    uint percent = (geneDrugRelation[i].deterioratedCount / geneDrugRelation[i].totalCount)*100;
-                    geneDrugRelation[i].deterioratedPercent = uintToString(percent);
-                }
-                if(suspectedRelation == true) {
-                    geneDrugRelation[i].suspectedRelationCount++;
-                    uint percent = (geneDrugRelation[i].suspectedRelationCount / geneDrugRelation[i].totalCount)*100;
-                    geneDrugRelation[i].suspectedRelationPercent = uintToString(percent);
-                }
-                if(seriousSideEffect == true) {
-                    geneDrugRelation[i].sideEffectCount++;
-                    uint percent = (geneDrugRelation[i].sideEffectCount / geneDrugRelation[i].totalCount)*100;
-                    geneDrugRelation[i].sideEffectPercent = uintToString(percent);
-                }
-            }
-            else {
-                geneDrugRelation.push(GeneDrugRelation({
-                    geneName: geneName,
-                    variantNumber: variantNumber,
-                    drugName: drugName,
-                    totalCount: 1,
-                    improvedCount: 0,
-                    improvedPercent: "0",
-                    unchangedCount: 0,
-                    unchangedPercent: "0",
-                    deterioratedCount: 0,
-                    deterioratedPercent: "0",
-                    suspectedRelationCount: 0,
-                    suspectedRelationPercent: "0",
-                    sideEffectCount: 1,
-                    sideEffectPercent: "1"
-                }));
-            }
-            
-            
-        }
-        
-        observationCountOf[msg.sender] = observationCountOf[msg.sender] + 1;
     }
     */
     /** Takes geneName, variant-number, and drug-name as strings. A value of "*" for any name should be considered as a wildcard or alternatively as a null parameter.
